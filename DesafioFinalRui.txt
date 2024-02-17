@@ -1,0 +1,191 @@
+#include <Adafruit_LiquidCrystal.h>
+
+
+Adafruit_LiquidCrystal lcd_1(0);
+
+
+int buttonPin = 7;
+int ledPin = 13;
+
+int buttonPin2 = 6;
+int ledPin2 = 10;
+int LM35 = A1;
+
+int buzzerPin=8;
+int ldrPin = A0;
+
+int pwmPin = A2;
+int ledPin3 =9;
+
+
+
+int pwmnolcd(int pwm){
+ lcd_1.setCursor(12, 0);
+ lcd_1.print(pwm);
+
+}
+
+void lerbotaolcd2(int buttonState2){
+  lcd_1.setCursor(15, 1);
+  if(buttonState2==HIGH){
+
+  lcd_1.print("D");}
+   else{
+     lcd_1.print("L");}    
+}
+  
+int funcligaled3(int pwm){
+analogWrite(ledPin3,pwm);
+
+}
+  
+  
+int funcpwm(){
+  int valorLido;
+ valorLido = analogRead(pwmPin);
+Serial.println(valorLido); 
+  return valorLido;
+}
+int funcledldr(int ldrValor){
+lcd_1.setCursor(2, 1);
+ lcd_1.print(ldrValor);
+
+
+}
+ 
+
+
+void lertemplcd(float temperatura){
+  lcd_1.setCursor(3, 0);
+  lcd_1.print(temperatura );
+   
+  }
+void lerbotaolcd1(int buttonState){
+  lcd_1.setCursor(10, 1);
+  if(buttonState==HIGH){
+
+  lcd_1.print("D");}
+   else{
+     lcd_1.print("L");}   }     
+
+int funcled3(int valorLido){ 
+        int pwm;        
+  pwm = map(valorLido, 0, 1023, 0, 255);
+  
+  
+  return pwm;
+}
+void funcbuzzer(float temperatura){
+ 
+  if (temperatura >= 30)
+  tone(buzzerPin, 2000);
+  
+  else {
+ 	noTone(buzzerPin); 
+  }}
+
+int funcaoLerLuz(){
+  int ldrValor;
+  ldrValor = analogRead(ldrPin);
+  Serial.print("Valor LDR:");
+  Serial.println(ldrValor);
+  return ldrValor;
+  
+}
+
+float funcaoTemp(){
+  float temperatura;
+ temperatura = (float(((((analogRead(LM35)*5.0)/1023)*1000)-500)/10));
+  Serial.print("Temperatura:");
+Serial.println(temperatura); 
+  return temperatura;
+}
+
+int funcaoBotao1() {
+  int buttonState;
+  Serial.println(buttonState);
+  buttonState = digitalRead(buttonPin);
+  return buttonState;
+    }
+
+int funcaoBotao2() {
+  int buttonState2=0;
+  Serial.println(buttonState2);
+  buttonState2 = digitalRead(buttonPin2);
+ return buttonState2;}
+
+int funcaoBotaoLed1(int buttonState) {
+ 
+  
+  if (buttonState == HIGH) {
+    digitalWrite(ledPin, LOW);
+  } else {
+    digitalWrite(ledPin, HIGH);
+  }
+}
+
+int funcaoBotaoLed2(int buttonState2) {
+  
+	
+  if (buttonState2 == HIGH) {
+    digitalWrite(ledPin2, LOW);
+  } else {
+    digitalWrite(ledPin2, HIGH);
+  }}
+
+
+void setup() {
+lcd_1.begin(16, 2);
+  lcd_1.setCursor(0, 0);
+  lcd_1.print("TP:      PT:     ");
+  lcd_1.setCursor(0, 1);
+  lcd_1.print("LD    L1:  L2:  ");
+
+  
+ 
+
+  pinMode(ledPin, OUTPUT);
+  pinMode(ledPin2, OUTPUT);
+  pinMode(ledPin3, OUTPUT);
+  pinMode(buttonPin, INPUT);
+  pinMode(buttonPin2, INPUT);
+  pinMode(buzzerPin, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  int ldrValor;
+  unsigned int valorLido;
+unsigned int pwm;
+int buttonState;
+float temperatura;
+  int buttonState2;
+  
+   temperatura = funcaoTemp();
+  
+ 	funcbuzzer(temperatura);
+  lertemplcd(temperatura);
+  buttonState=funcaoBotao1();
+ funcaoBotaoLed1(buttonState); 
+  lerbotaolcd1(buttonState);
+  
+   
+  ldrValor=funcaoLerLuz();
+  funcledldr(ldrValor);
+ buttonState2=funcaoBotao2();
+  funcaoBotaoLed2(buttonState2); 
+  lerbotaolcd2(buttonState2);
+  
+
+  
+ valorLido = funcpwm();
+	pwm=funcled3(valorLido);
+  Serial.println(pwm);
+  
+ 
+  pwmnolcd(pwm);
+  funcligaled3(pwm);
+}
+
+
